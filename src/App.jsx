@@ -52,23 +52,39 @@ export default function StylishPets() {
     }
   }, []);
 
-  const validateLicense = async () => {
-    setError('');
-    if (!licenseKey.trim()) {
-      setError('Please enter a license key');
-      return;
-    }
+const validateLicense = async () => {
+  setError('');
+  if (!licenseKey.trim()) {
+    setError('Please enter a license key');
+    return;
+  }
 
-    // Simulate license validation - in production, validate against Gumroad API
-    // For demo, accept any key starting with "SP-"
-    if (licenseKey.startsWith('SP-') && licenseKey.length > 8) {
+  try {
+    // Call your backend API to validate with Gumroad
+    const response = await fetch('/api/validate-license', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        license_key: licenseKey,
+        product_id: 'YOUR_GUMROAD_PRODUCT_ID' // Get this from Gumroad
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
       localStorage.setItem('stylishPetsLicense', licenseKey);
       setIsLicensed(true);
     } else {
       setError('Invalid license key. Please check your Gumroad purchase email.');
     }
-  };
-
+  } catch (err) {
+    setError('Failed to validate license. Please try again.');
+    console.error(err);
+  }
+};
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
