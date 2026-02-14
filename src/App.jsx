@@ -183,8 +183,7 @@ const validateLicense = async () => {
 
           <div className="space-y-4">
             <input
-              type="text"
-              placeholder="SP-XXXX-XXXX-XXXX"
+  
               value={licenseKey}
               onChange={(e) => setLicenseKey(e.target.value)}
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"
