@@ -52,45 +52,20 @@ export default function StylishPets() {
     }
   }, []);
 
-const validateLicense = async () => {
-  setError('');
-  if (!licenseKey.trim()) {
-    setError('Please enter a license key');
-    return;
-  }
-
-  // TEMPORARY: Accept any license key for testing
-  // This bypasses Gumroad validation completely
-  localStorage.setItem('stylishPetsLicense', licenseKey);
-  setIsLicensed(true);
-};
-
-  try {
-    // Call your backend API to validate with Gumroad
-    const response = await fetch('/api/validate-license', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        license_key: licenseKey,
-        product_id: 'YOUR_GUMROAD_PRODUCT_ID' // Get this from Gumroad
-      })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      localStorage.setItem('stylishPetsLicense', licenseKey);
-      setIsLicensed(true);
-    } else {
-      setError('Invalid license key. Please check your Gumroad purchase email.');
+  const validateLicense = async () => {
+    setError('');
+    if (!licenseKey.trim()) {
+      setError('Please enter a license key');
+      return;
     }
-  } catch (err) {
-    setError('Failed to validate license. Please try again.');
-    console.error(err);
-  }
-};
+
+    // TEMPORARY: Accept any license key for testing
+    // This bypasses Gumroad validation completely
+    // TODO: Add real Gumroad validation before production launch
+    localStorage.setItem('stylishPetsLicense', licenseKey);
+    setIsLicensed(true);
+  };
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -189,7 +164,8 @@ const validateLicense = async () => {
 
           <div className="space-y-4">
             <input
-  
+              type="text"
+              placeholder="Enter any license key to test"
               value={licenseKey}
               onChange={(e) => setLicenseKey(e.target.value)}
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"
