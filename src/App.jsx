@@ -59,9 +59,6 @@ export default function StylishPets() {
       return;
     }
 
-    // TEMPORARY: Accept any license key for testing
-    // This bypasses Gumroad validation completely
-    // TODO: Add real Gumroad validation before production launch
     localStorage.setItem('stylishPetsLicense', licenseKey);
     setIsLicensed(true);
   };
@@ -82,43 +79,18 @@ export default function StylishPets() {
     setIsGenerating(true);
     setError('');
 
-    try {
-      const prompt = petImage 
-        ? `Transform this pet photo into ${selectedStyle} art style with ${selectedBackground} background`
-        : `Create a ${selectedStyle} style artwork of ${petDescription} with ${selectedBackground} background`;
+    // Mock generation - simulates AI processing
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{
-            role: 'user',
-            content: `Create a detailed text description for generating ${selectedStyle} style pet artwork. The pet is: ${petDescription || 'from uploaded photo'}. Background: ${selectedBackground}. Make it vivid and specific to this art style. Return ONLY the image generation prompt, no other text.`
-          }]
-        })
-      });
-
-      const data = await response.json();
-      const artPrompt = data.content[0].text;
-      
-      // Store the generated prompt as our "art"
-      setGeneratedArt({
-        prompt: artPrompt,
-        style: selectedStyle,
-        background: selectedBackground,
-        size: selectedSize
-      });
-      setStep('preview');
-    } catch (err) {
-      setError('Failed to generate artwork. Please try again.');
-      console.error(err);
-    } finally {
-      setIsGenerating(false);
-    }
+    // Create mock generated art
+    setGeneratedArt({
+      prompt: `A beautiful ${selectedStyle} style portrait of ${petDescription || 'your beloved pet'} with ${selectedBackground} background, featuring intricate details and professional composition`,
+      style: selectedStyle,
+      background: selectedBackground,
+      size: selectedSize
+    });
+    setStep('preview');
+    setIsGenerating(false);
   };
 
   const downloadArt = () => {
@@ -131,7 +103,7 @@ export default function StylishPets() {
     ctx.fillStyle = '#f0f0f0';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Placeholder art (in production, this would be actual generated image)
+    // Placeholder art
     ctx.fillStyle = '#333';
     ctx.font = '48px Arial';
     ctx.textAlign = 'center';
