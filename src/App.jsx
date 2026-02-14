@@ -59,6 +59,12 @@ const validateLicense = async () => {
     return;
   }
 
+  // TEMPORARY: Accept any license key for testing
+  // This bypasses Gumroad validation completely
+  localStorage.setItem('stylishPetsLicense', licenseKey);
+  setIsLicensed(true);
+};
+
   try {
     // Call your backend API to validate with Gumroad
     const response = await fetch('/api/validate-license', {
